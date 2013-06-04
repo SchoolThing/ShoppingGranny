@@ -1,8 +1,14 @@
 <resources>
 
     <string name="app_name">Shopping Granny</string>
-    <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Shopping Granny</string>
-
+	<string name="help_text1">How to Play:</string>
+	<string name="help_text2">1. Swipe once up or down to move once. </string>
+	<string name="help_text3">2. Swipe and hold up or down to make the avatar</string>
+	<string name="help_text4">continuously move.</string>
+	<string name="help_text5">3. Collect market products to gain points.</string>
+	<string name="help_text6">4. Avoid obstacles.</string>
+	<string name="help_text7">5. Gather 10 products to get a throwable rolling pin.</string>
+	
 </resources>

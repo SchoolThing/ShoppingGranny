@@ -29,18 +29,22 @@ import com.shopping.granny.obj.collectable.Coffee;
 import com.shopping.granny.obj.collectable.Lemon;
 import com.shopping.granny.obj.collectable.Pepper;
 
-public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener{
+public class MainMenuScene extends MenuScene implements
+		IOnMenuItemClickListener {
 
 	private Camera mCamera;
+
+	private boolean helpIsOpen;
 
 	public static int CAMERA_WIDTH = 800;
 	public static int CAMERA_HEIGHT = 480;
 	protected static final int MENU_PLAY = 0;
+	protected static final int MENU_HOWTO = 1;
 
 	public MainMenuScene() {
-		
+
 		super(MainActivity.getSharedInstance().getmCamera());
-		
+
 		float bgHeight = MainActivity.getSharedInstance()
 				.getmMenuSceneBackgroundRegion().getHeight();
 		float bgWidth = MainActivity.getSharedInstance()
@@ -51,12 +55,29 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 						.getmMenuSceneBackgroundRegion(), MainActivity
 						.getSharedInstance().getVertexBufferObjectManager());
 		attachChild(mBackgroundSprite);
-		
+
 		createCoffee();
 		createCheese();
 		createPepper();
 		createLemon();
 		createPlayButton();
+		createHowtoButton();
+	}
+
+	private void createHowtoButton() {
+		SpriteMenuItem howto = new SpriteMenuItem(1, MainActivity
+				.getSharedInstance().getmHowtoButtonRegion(), MainActivity
+				.getSharedInstance().getVertexBufferObjectManager());
+
+		howto.setPosition(MainActivity.CAMERA_WIDTH
+				/ 2
+				- MainActivity.getSharedInstance().getmHowtoButtonRegion()
+						.getWidth() / 2, MainActivity.CAMERA_HEIGHT
+				/ 2
+				- MainActivity.getSharedInstance().getmHowtoButtonRegion()
+						.getHeight() / 2 + howto.getHeight() + 30);
+		this.addMenuItem(howto);
+		this.setOnMenuItemClickListener(this);
 
 	}
 
@@ -64,7 +85,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		SpriteMenuItem play = new SpriteMenuItem(0, MainActivity
 				.getSharedInstance().getmPlayButtonRegion(), MainActivity
 				.getSharedInstance().getVertexBufferObjectManager());
-		
+
 		play.setPosition(MainActivity.CAMERA_WIDTH
 				/ 2
 				- MainActivity.getSharedInstance().getmPlayButtonRegion()
@@ -74,16 +95,13 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 						.getHeight() / 2);
 		this.addMenuItem(play);
 		this.setOnMenuItemClickListener(this);
-	
+
 	}
 
 	private void createLemon() {
 		Lemon lemon = new Lemon(CAMERA_WIDTH, CAMERA_HEIGHT);
 		MoveModifier Up = new MoveModifier(2f, CAMERA_WIDTH, 0, 0,
 				CAMERA_HEIGHT);
-		// MoveModifier Down = new MoveModifier(2f, CAMERA_WIDTH - 400,
-		// CAMERA_WIDTH - 100, CAMERA_HEIGHT, CAMERA_HEIGHT);
-
 		LoopEntityModifier loop = new LoopEntityModifier(
 				new SequenceEntityModifier(Up));
 		LoopEntityModifier rotate = new LoopEntityModifier(
@@ -142,13 +160,20 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		coffee.getSprite().registerEntityModifier(loop);
 		attachChild(coffee.getSprite());
 	}
+	
+	
 
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
 			float pMenuItemLocalX, float pMenuItemLocalY) {
-		switch(pMenuItem.getID()){
-		case MENU_PLAY : 
+		switch (pMenuItem.getID()) {
+		case MENU_PLAY:
 			MainActivity.getSharedInstance().setmCurrentScene(new GameScene());
+			return true;
+			
+		case MENU_HOWTO:
+			//Log.d("we are here", "asdfasdf");
+			MainActivity.getSharedInstance().setmCurrentScene(new HelpScene());
 			return true;
 		}
 		return false;

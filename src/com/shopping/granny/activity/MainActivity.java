@@ -30,6 +30,7 @@ import android.util.Log;
 import com.shopping.granny.manager.HighscoreManager;
 import com.shopping.granny.scene.EndGameScene;
 import com.shopping.granny.scene.GameScene;
+import com.shopping.granny.scene.HelpScene;
 import com.shopping.granny.scene.MainMenuScene;
 import com.shopping.granny.scene.SplashScene;
 
@@ -92,6 +93,8 @@ public class MainActivity extends SimpleBaseGameActivity {
 	private ITexture shootButton;
 	private TextureRegion mShootButtonTextureRegion;
 	private HighscoreManager highscoreManager;
+	private BitmapTexture HowtoButton;
+	private TextureRegion mHowtoButtonRegion;
 
 	// ------------------------------------------------------------------------
 	public Font getmFont() {
@@ -647,6 +650,18 @@ public class MainActivity extends SimpleBaseGameActivity {
 					.extractFromTexture(PlayButton);
 			// end of button
 
+			//how to button
+			HowtoButton = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				
+				@Override
+				public InputStream open() throws IOException {
+					return getAssets().open("gfx/howto-button.png");
+				}
+			});
+			HowtoButton.load();
+			mHowtoButtonRegion = TextureRegionFactory.extractFromTexture(HowtoButton);
+			// end of button
+			
 			// Play Again button
 			PlayAgainButton = new BitmapTexture(this.getTextureManager(),
 					new IInputStreamOpener() {
@@ -706,6 +721,10 @@ public class MainActivity extends SimpleBaseGameActivity {
 
 	}
 
+	public TextureRegion getmHowtoButtonRegion() {
+		return mHowtoButtonRegion;
+	}
+
 	@Override
 	protected Scene onCreateScene() {
 		highscoreManager = new HighscoreManager(this);
@@ -734,11 +753,18 @@ public class MainActivity extends SimpleBaseGameActivity {
 
 	@Override
 	public void onBackPressed() {
-		if (mCurrentScene instanceof GameScene)
+		if (mCurrentScene instanceof MainMenuScene){
+			mCurrentScene = null;
+			super.onBackPressed();
+		}
+		else if(mCurrentScene instanceof HelpScene){
+			//Log.d("hello", "sdhfakrjfg");
+			setmCurrentScene(new MainMenuScene());
+		}
+		else if(mCurrentScene instanceof GameScene){
 			((GameScene) mCurrentScene).detach();
-
-		mCurrentScene = null;
-		super.onBackPressed();
+			setmCurrentScene(new MainMenuScene());
+		}
 	}
 
 	@Override
