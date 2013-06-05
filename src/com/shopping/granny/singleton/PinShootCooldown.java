@@ -3,19 +3,19 @@ package com.shopping.granny.singleton;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ObstaclesCooldown {
+public class PinShootCooldown {
 	private boolean valid;
 	private Timer timer;
-	private int delay = 2000;
-	private static ObstaclesCooldown instance;
+	private int delay = 10000;
+	private static PinShootCooldown instance;
 	
-	public static ObstaclesCooldown getSharedInstance(){
+	public static PinShootCooldown getSharedInstance(){
 		if(instance == null)
-			instance = new ObstaclesCooldown();
+			instance = new PinShootCooldown();
 		return instance;
 	}
 	
-	private ObstaclesCooldown(){
+	private PinShootCooldown(){
 		timer = new Timer();
 		valid = true;
 	}
@@ -30,8 +30,8 @@ public class ObstaclesCooldown {
 	}
 	
 	class Task extends TimerTask{
-		public void run() {
+		public void run(){
 			valid = true;
 		}
-	}
+	};
 }

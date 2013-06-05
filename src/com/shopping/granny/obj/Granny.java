@@ -16,11 +16,11 @@ import android.util.Log;
 
 import com.shopping.granny.activity.MainActivity;
 import com.shopping.granny.obj.collectable.Collectable;
+import com.shopping.granny.singleton.PinShootCooldown;
 
 public class Granny {
 
 	private boolean moveable;
-	private boolean shootReady;
 	private GrannySprite mGrannySprite;
 	private LinkedList<Collectable> inventory;
 	private AnimatedSprite pin;
@@ -37,11 +37,11 @@ public class Granny {
 	}
 
 	public boolean isShootReady(){
-		return shootReady;
+		return PinShootCooldown.getSharedInstance().checkValidity();
 	}
 	
-	public void setShootReady(boolean s){
-		shootReady = s;
+	public float getPinSpeed(){
+		return pinSpeed;
 	}
 	
 	public void setPinSpeed(float s) {

@@ -48,13 +48,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private float score;
 	private long extraScore;
 	private Text scoreBoard;
-	private Text FPSText;
+	private Text pinsNumberText;
 	private Text levelText;
 	private FPSCounter FPS;
 	private int lastLane;
 	private int collectableType;
 	private float swipeInitialX;
 	private float swipeInitialY;
+	private int pinNumber;
 
 	public Text getLevelText() {
 		return levelText;
@@ -88,12 +89,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		this.scoreBoard = scoreBoard;
 	}
 
-	public Text getFPSText() {
-		return FPSText;
+	public Text getPinsNumberText() {
+		return pinsNumberText;
 	}
 
-	public void setFPSText(Text fPSText) {
-		FPSText = fPSText;
+	public void setPinsNumberText(Text pinsNumberText) {
+		this.pinsNumberText = pinsNumberText;
 	}
 
 	public FPSCounter getFPS() {
@@ -116,6 +117,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		return mGranny;
 	}
 
+	public int getPinNumber() {
+		return pinNumber;
+	}
+
+	public void setPinNumber(int pinNumber) {
+		this.pinNumber = pinNumber;
+	}
+
 	public GameScene() {
 		mCamera = MainActivity.getSharedInstance().getmCamera();
 
@@ -124,10 +133,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		obstacles = new LinkedList<Obstacle>();
 		collectables = new LinkedList<Collectable>();
-
-		FPS = new FPSCounter();
-
-		this.registerUpdateHandler(FPS);
 
 		float bgHeight = MainActivity.getSharedInstance()
 				.getmBackgroundTextureRegion().getHeight();
@@ -163,10 +168,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 						- MainActivity.getSharedInstance()
 								.getmGrannyTextureRegion().getHeight() / 2);
 
-		FPSText = new Text(170, 0, MainActivity.getSharedInstance().getmFont(),
-				"FPS: " + (long) FPS.getFPS(), "FPS: XXX".length(),
+		pinsNumberText = new Text(170, 0, MainActivity.getSharedInstance().getmFont(),
+				"Pins: " + getPinNumber(), "Pins: XX".length(),
 				MainActivity.getSharedInstance().getVertexBufferObjectManager());
-		attachChild(FPSText);
+		attachChild(pinsNumberText);
 
 		long totalScore = ((long) score) + extraScore;
 
@@ -190,10 +195,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				int eventAction = pSceneTouchEvent.getAction();
 				switch (eventAction) {
 				case TouchEvent.ACTION_UP:
-					if (mGranny.isShootReady()) {
-						mGranny.setShootReady(false);
-						shootButton.setVisible(false);
+					if (mGranny.isShootReady() && getPinNumber()>0) {
 						shootPin();
+						setPinNumber(getPinNumber()-1);
 					}
 					break;
 				}
@@ -201,7 +205,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			}
 		};
 		
-		shootButton.setVisible(false);
 		attachChild(shootButton);
 		
 		registerTouchArea(shootButton);
@@ -273,6 +276,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	public void resetValues() {
 		clearUpdateHandlers();
 		setScore(0);
+		setPinNumber(0);
 		extraScore = 0;
 		mGranny.restart();
 		clearChildScene();
@@ -280,7 +284,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		MOVE_DURATION = 0.15f;
 		setObstacleSpeed(200);
 		registerUpdateHandler(new GameLoopUpdateHandler());
-		registerUpdateHandler(FPS);
+//		registerUpdateHandler(FPS);
 		ObstaclePool.sharedObstaclePool().shufflePoolItems();
 		CollectablePool.sharedCollectablePool().shufflePoolItems();
 	}
@@ -346,8 +350,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					extraScore += 15;
 					mGranny.getInventory().add(c);
 					if (((mGranny.getInventory().size() % 10) == 0)) {
-						shootButton.setVisible(true);
-						mGranny.setShootReady(true);
+						setPinNumber(getPinNumber()+1); 
 					}
 					CollectablePool.sharedCollectablePool().recyclePoolItem(c);
 					it2.remove();
